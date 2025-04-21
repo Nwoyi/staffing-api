@@ -1,12 +1,12 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "Staffing API",
+    "title": "Philip Staffing API",
     "version": "1.0.0",
-    "description": "A RESTful API for managing staff records."
+    "description": "Philip Nwoyi RESTful API for managing staff records."
   },
   "servers": [
-    { "url": "http://localhost:3000" }
+    { "url": "https://staffing-api-3.onrender.com" }
   ],
   "paths": {
     "/staff": {
