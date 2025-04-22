@@ -6,7 +6,7 @@
     "description": "Philip Nwoyi RESTful API for managing staff records."
   },
   "servers": [
-    { "url": "https://staffing-api-3.onrender.com" }
+    { "url": "https://staffing-api-bkbn.onrender.com" }
   ],
   "paths": {
     "/staff": {
