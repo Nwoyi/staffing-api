@@ -240,6 +240,43 @@ All errors return a JSON object:
 
 ---
 
+## Supabase Integration (Persistent Storage)
+
+This API now uses **Supabase** (a hosted PostgreSQL database) for all staff data. All CRUD operations are persistent and shared across all deployments.
+
+### 1. Supabase Setup
+- The required table (`staff`) is automatically created in your Supabase project.
+- You do **not** need to manage any in-memory or local storage.
+
+### 2. Environment Variables
+Create a `.env` file at the project root (not in any subfolder):
+```
+SUPABASE_URL=https://ecbleckbmyhtkluuadxk.supabase.co
+SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVjYmxlY2tibXlodGtsdXVhZHhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUyNzE0ODUsImV4cCI6MjA2MDg0NzQ4NX0.yq1VSdl3bIcjkewyNyGV3pQClKDItX1UiYs7tkCkeXg
+```
+- **Never commit your real `.env` file to version control.**
+- Use `.env.example` as a template for other environments.
+
+### 3. Install Supabase Client
+Install the Supabase JS client:
+```sh
+npm install @supabase/supabase-js dotenv
+```
+
+### 4. Local Development
+- Make sure your `.env` file is present and filled in.
+- Start the server:
+  ```sh
+  npm start
+  ```
+- All staff data is now stored in Supabase and persists across restarts.
+
+### 5. Deployment (Render)
+- In your Render dashboard, add the same SUPABASE_URL and SUPABASE_KEY as environment variables.
+- No other changes are needed—your API will use Supabase in production.
+
+---
+
 ## Deployment (Render)
 
 1. **Push code to GitHub.**
@@ -247,7 +284,7 @@ All errors return a JSON object:
    - Build command: `npm install`
    - Start command: `npm start`
    - Environment: Node 18+
-3. **Set environment variables** (if needed).
+3. **Set environment variables** (`SUPABASE_URL`, `SUPABASE_KEY`).
 4. **Deploy!**
 5. **Your API will be live at:**  
    `https://staffing-api-3.onrender.com/`  
@@ -260,6 +297,10 @@ All errors return a JSON object:
 - **Add new endpoints:**  
   Create new route/controller files in `src/routes` and `src/controllers`.
 - **Add persistent storage:**  
+  The API now uses [Supabase](https://supabase.com/) (PostgreSQL) for persistent storage of staff records. All CRUD operations are backed by a real database.
+  
+  See the **Supabase Integration** section below for setup details.
+
   Replace in-memory array in `staff.controller.js` with a database (MongoDB, PostgreSQL, etc).
 - **Add authentication:**  
   Integrate JWT or OAuth2 for protected routes.

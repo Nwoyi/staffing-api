@@ -1,7 +1,7 @@
 services:
   - type: web
     name: staffing-api
-    env: node
+    runtime: node
     buildCommand: npm install
     startCommand: node src/index.js
     envVars:
@@ -9,5 +9,9 @@ services:
         value: production
       - key: PORT
         value: 10000
+      - key: SUPABASE_URL
+        value: https://ecbleckbmyhtkluuadxk.supabase.co
+      - key: SUPABASE_KEY
+        value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVjYmxlY2tibXlodGtsdXVhZHhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUyNzE0ODUsImV4cCI6MjA2MDg0NzQ4NX0.yq1VSdl3bIcjkewyNyGV3pQClKDItX1UiYs7tkCkeXg
     healthCheckPath: /staff
-    autoDeploy: true 
+    autoDeploy: true
