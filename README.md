@@ -198,7 +198,105 @@ All errors return a JSON object:
 ## Environment Variables
 
 - `PORT`: Port to run the server (default: 3000)
-- No database config needed (in-memory storage by default)
+- `SUPABASE_URL`: Your Supabase project URL (required)
+- `SUPABASE_KEY`: Your Supabase service role key (required)
+
+---
+
+## Supabase Integration (Persistent Storage)
+
+This API uses **Supabase** (PostgreSQL) for all staff data. All CRUD operations are persistent and shared across all deployments.
+
+### 1. Exact Staff Table Schema (SQL)
+
+**You must use this exact table schema for full compatibility.**
+
+```sql
+create table if not exists staff (
+  id uuid primary key default gen_random_uuid(),
+  "firstName" text not null,
+  "lastName" text not null,
+  email text not null unique,
+  position text not null,
+  department text,
+  status text not null default 'active',
+  "hireDate" date not null default current_date,
+  "createdAt" timestamp with time zone not null default now(),
+  "updatedAt" timestamp with time zone not null default now()
+);
+```
+
+- **Column names are case-sensitive and must match exactly.**
+- **Do NOT create or use columns with different casing or spelling (e.g., `firstname`, `createdat`, etc).**
+- If you have extra or incorrect columns, remove them with:
+
+```sql
+alter table staff drop column if exists "firstname";
+alter table staff drop column if exists "lastname";
+alter table staff drop column if exists hiredate;
+alter table staff drop column if exists createdat;
+alter table staff drop column if exists updatedat;
+```
+
+### 2. Environment Variables
+
+Create a `.env` file at the project root:
+```
+SUPABASE_URL=your-supabase-url
+SUPABASE_KEY=your-supabase-service-key
+```
+- Never commit your real `.env` file to version control.
+- Use `.env.example` as a template for other environments.
+
+### 3. Install Supabase Client
+
+```sh
+npm install @supabase/supabase-js dotenv
+```
+
+### 4. Local Development
+- Ensure your `.env` file is present and filled in.
+- Start the server:
+  ```sh
+  npm start
+  ```
+- All staff data is now stored in Supabase and persists across restarts.
+
+### 5. Deployment (Render)
+- In your Render dashboard, add the same SUPABASE_URL and SUPABASE_KEY as environment variables.
+- No other changes are needed—your API will use Supabase in production.
+
+---
+
+## Supabase Schema Troubleshooting
+
+**Common errors and how to fix them:**
+
+- **Error: `Could not find the 'firstName' column of 'staff' in the schema cache`**
+  - Your table is missing the correct `firstName` column (case-sensitive).
+  - Fix: Run the exact SQL above to create the table or add the column.
+
+- **Error: `null value in column "firstname" violates not-null constraint`**
+  - You have an extra, incorrect column (`firstname` lowercase) in your table.
+  - Fix: Remove it using the SQL in the schema section.
+
+- **Error: `RLS is enabled`**
+  - Row Level Security is enabled and blocking access.
+  - Fix: Run `alter table staff disable row level security;`
+
+- **General tip:**
+  - Always verify your table columns in the Supabase dashboard or with `\d staff` in SQL.
+
+---
+
+## Production Checklist
+
+- [ ] Table schema matches the SQL above, with no extra columns.
+- [ ] `.env` is present and not committed to git.
+- [ ] Environment variables set in Render.
+- [ ] All endpoints tested via Swagger UI.
+- [ ] RLS is **disabled** on the staff table (unless you add policies).
+- [ ] README and OpenAPI docs are up-to-date.
 
 ---
 
